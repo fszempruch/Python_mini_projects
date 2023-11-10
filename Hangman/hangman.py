@@ -3,16 +3,18 @@
 import more_itertools
 
 print("Witaj w grze WISIELEC, w której masz 11 prób aby odgadnąć zagadkowe słowo ! \n")
-slowo = input("Podaj słowo do odgadnięcia przez drugą osobę: ").upper()
-print(f"Słowo jest {len(slowo)} literowe!")
-litery = set(slowo)
+word = input("Podaj słowo do odgadnięcia przez drugą osobę: ").upper()
+len_word = len(word)
+print(f"Słowo jest {len_word} literowe!")
+
+litery = set(word)
 wykorzystane_litery = []
 
-odgadniete = list("_" * len(slowo))
-proba = 11
+odgadniete = list("_" * len_word)
+proby = 11
 
-while proba > 0:
-    print("Liczba pozostałych prób: ", proba)
+while True:
+    print("Liczba pozostałych prób: ", proby)
     litera = input("Podaj literę: ").upper()
 
     while litera in wykorzystane_litery:
@@ -23,16 +25,17 @@ while proba > 0:
         print("Brawo, trafiłeś literę!")
         wykorzystane_litery.append(litera)
         if litera in litery:
-            indeksy_liter = list(more_itertools.locate(slowo, lambda x: x == litera))
+            indeksy_liter = list(more_itertools.locate(word, lambda x: x == litera))
             for i in indeksy_liter:
                 odgadniete[int(i)] = litera
             print("".join(odgadniete))
-            if "".join(odgadniete) == slowo:
+            if "".join(odgadniete) == word:
                 print("WYGRANA!")
                 break
     else:
         print("Przykro mi, nie trafiłeś litery...")
-        proba -= 1
+        proby -= 1
 
-    if proba == 0:
+    if proby == 0:
         print("PRZEGRANA...")
+        break
