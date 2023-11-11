@@ -1,6 +1,5 @@
 ### Countdown
 import datetime
-import sys
 import time
 from playsound import playsound
 
