@@ -1,12 +1,13 @@
 import random
+import sys
 
 
 def choice(selection):
-    if selection == "1" or selection.lower == "rock":
+    if selection == "1" or selection.lower() == "rock":
         return "rock"
-    elif selection == "2" or selection.lower == "scissors":
+    elif selection == "2" or selection.lower() == "scissors":
         return "scissors"
-    elif selection == "3" or selection.lower == "paper":
+    elif selection == "3" or selection.lower() == "paper":
         return "paper"
 
 
@@ -23,15 +24,27 @@ def comparison(player, computer):
         return "Computer wins"
 
 
-if __name__ == "__main__":
-    possibilities = ["rock", "scissors", "paper"]
+def decision_get_and_validate():
+    while True:
+        decision = input().lower()
+        if decision in ["e", "exit"]:
+            print("Thank you for playing this game!")
+            sys.exit()
+        elif decision not in ["1", "2", "3", "rock", "scissors", "paper", "e", "exit"]:
+            print("Wrong input, please try again...")
+        else:
+            return decision
 
-    print("Hello in Rock Scissors Paper Game!")
 
-    victory_counter = 0
+def game():
+    victories_counter = 0
+
+    print("Hello in Rock, Scissors, Paper Game!")
 
     while True:
-        print("Victory counter: ", victory_counter)
+        print(" ")
+        print("Victory counter: ", victories_counter)
+        print(" ")
         print(
             "What do you choose: \n \
             1. Rock \n \
@@ -40,23 +53,21 @@ if __name__ == "__main__":
             exit or e - for exit"
         )
 
-        decision = input().lower()
+        decision = decision_get_and_validate()
 
-        if decision not in ["1", "2", "3", "rock", "scissors", "paper", "e", "exit"]:
-            print("Wrong input, please try again...")
-        elif decision in ["e", "exit"]:
-            print("Thank you for playing this game!")
-            print("Your result:", victory_counter)
-            break
-        else:
-            player_choice = choice(decision)
-            print("Your choice:", player_choice)
+        player_choice = choice(decision)
+        print("Your choice:", player_choice)
 
-            computer_choice = random.choice(possibilities)
-            print("Computer's coice:", computer_choice)
+        computer_choice = choice(random.choice(["1", "2", "3"]))
+        print("Computer's choice:", computer_choice)
 
-            result = comparison(player_choice, computer_choice)
-            print(result)
+        result = comparison(player_choice, computer_choice)
 
-            if result == "You win":
-                victory_counter += 1
+        print(result)
+
+        if result == "You win":
+            victories_counter += 1
+
+
+if __name__ == "__main__":
+    game()
