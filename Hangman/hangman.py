@@ -1,41 +1,85 @@
-### Hangman
+import os
+import random
+import sys
 
-import more_itertools
+WORDS_FILE = "slownik.txt"
 
-print("Witaj w grze WISIELEC, w której masz 11 prób aby odgadnąć zagadkowe słowo ! \n")
-word = input("Podaj słowo do odgadnięcia przez drugą osobę: ").upper()
-len_word = len(word)
-print(f"Słowo jest {len_word} literowe!")
 
-litery = set(word)
-wykorzystane_litery = []
+def load_words():
+    print("Loading words...")
+    try:
+        path_words = os.path.join(os.getcwd(), "Hangman", WORDS_FILE)
 
-odgadniete = list("_" * len_word)
-proby = 11
-
-while True:
-    print("Liczba pozostałych prób: ", proby)
-    litera = input("Podaj literę: ").upper()
-
-    while litera in wykorzystane_litery:
-        print("Ta litera juz była wykorzystana!")
-        litera = input("Podaj literę: ").upper()
-
-    if litera in litery:
-        print("Brawo, trafiłeś literę!")
-        wykorzystane_litery.append(litera)
-        if litera in litery:
-            indeksy_liter = list(more_itertools.locate(word, lambda x: x == litera))
-            for i in indeksy_liter:
-                odgadniete[int(i)] = litera
-            print("".join(odgadniete))
-            if "".join(odgadniete) == word:
-                print("WYGRANA!")
-                break
+        with open(path_words, "r", encoding="utf-8") as f:
+            words_list = f.read().split()
+    except:
+        print(
+            "Words loading error ! \n \
+              Exiting the game..."
+        )
+        sys.exit()
     else:
-        print("Przykro mi, nie trafiłeś litery...")
-        proby -= 1
+        print("Words loaded succesfully!")
+        return words_list
 
-    if proby == 0:
-        print("PRZEGRANA...")
-        break
+
+def choose_word(words_list):
+    return random.choice(words_list)
+
+
+def is_word_guessed(word, letters_guessed):
+    if set(word) == set(letters_guessed):
+        return True
+    else:
+        return False
+
+
+def guessed_letters(word, letters_guessed):
+    guessed = []
+    for letter in word:
+        if letter in letters_guessed:
+            guessed.append(letter)
+        else:
+            guessed.append("_")
+    return "".join(guessed)
+
+
+def hangman():
+    words = load_words()
+    word = choose_word(words).lower()
+
+    letters_guessed = []
+    tries = 11
+
+    print("\nHello in Hangman game, where you have 11 tries to guess hidden word. \n")
+    print(f"Word that I am thinking about is {len(word)} letters long.")
+
+    while tries > 0:
+        if is_word_guessed(word, letters_guessed):
+            print("\nCongratulations, you win!")
+            break
+        else:
+            print(f"\nRemaining tries {tries} \n")
+            letter = input("Enter a letter: ").lower()
+            if letter in letters_guessed:
+                print("This letter was already guessed!")
+                print(f"Progress: {guessed_letters(word,letters_guessed)}")
+            elif letter in word:
+                letters_guessed.append(letter)
+                print("Nice! You guessed a letter!")
+                print(f"Progress: {guessed_letters(word,letters_guessed)}")
+
+            else:
+                tries -= 1
+                print("Oops! This letter is not in the word...")
+                print(f"Progress: {guessed_letters(word,letters_guessed)}")
+
+        if tries == 0:
+            print("\nYou lose :( You ran out of guesses...")
+            print(f"The word was: {word}")
+        else:
+            continue
+
+
+if __name__ == "__main__":
+    hangman()
