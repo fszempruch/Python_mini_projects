@@ -28,13 +28,13 @@ def choose_word(words_list):
 
 
 def is_word_guessed(word, letters_guessed):
-    if set(word) == set(letters_guessed):
+    if set(word).issubset(set(letters_guessed)):
         return True
     else:
         return False
 
 
-def guessed_letters(word, letters_guessed):
+def guessed(word, letters_guessed):
     guessed = []
     for letter in word:
         if letter in letters_guessed:
@@ -44,8 +44,7 @@ def guessed_letters(word, letters_guessed):
     return "".join(guessed)
 
 
-def hangman():
-    words = load_words()
+def hangman(words):
     word = choose_word(words).lower()
 
     letters_guessed = []
@@ -59,20 +58,21 @@ def hangman():
             print("\nCongratulations, you win!")
             break
         else:
-            print(f"\nRemaining tries {tries} \n")
+            print(f"\nRemaining tries: {tries} \n")
             letter = input("Enter a letter: ").lower()
             if letter in letters_guessed:
                 print("This letter was already guessed!")
-                print(f"Progress: {guessed_letters(word,letters_guessed)}")
+                print(f"Guessed: {guessed(word,letters_guessed)}")
             elif letter in word:
                 letters_guessed.append(letter)
                 print("Nice! You guessed a letter!")
-                print(f"Progress: {guessed_letters(word,letters_guessed)}")
+                print(f"Guessed: {guessed(word,letters_guessed)}")
 
             else:
+                letters_guessed.append(letter)
                 tries -= 1
                 print("Oops! This letter is not in the word...")
-                print(f"Progress: {guessed_letters(word,letters_guessed)}")
+                print(f"Guessed: {guessed(word,letters_guessed)}")
 
         if tries == 0:
             print("\nYou lose :( You ran out of guesses...")
@@ -82,4 +82,13 @@ def hangman():
 
 
 if __name__ == "__main__":
-    hangman()
+    words = load_words()
+
+    while True:
+        hangman(words)
+
+        decision = input("Do you want to start a new game? If no enter N/n: ")
+
+        if decision in ["n", "N"]:
+            print("Than you for playing this game.")
+            break
